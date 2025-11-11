@@ -1,0 +1,40 @@
+using System.Text;
+using Lab2CL.Conracts;
+using Lab2CL.Entities;
+
+namespace Lab2CL.Observers;
+
+public class SteelProvider: IProvider
+{
+    private List<DeliveryRecord> _records = new List<DeliveryRecord>();
+
+    private readonly float _minAmount = 1234;
+    private const float _trashhold = 125;
+    private readonly Random _random = new Random();
+    public void Update(float amountKg, float kgDiff, float amountM , float mDiff)
+    {
+        Ship(kgDiff);
+        if(amountKg < _trashhold)
+            Ship(_minAmount);
+    }
+
+    public void Ship(float diff)
+    {
+        _records.Add(new DeliveryRecord()
+        {
+            Amount = diff,
+            DeliveryTime = _random.Next(1000, 10000),
+            Status = diff > 0 ? DeliveryRecord.StatusEnum.Отгрузка : DeliveryRecord.StatusEnum.Доставка
+        });
+    }
+
+    public List<string> GetData()
+    {
+        var result = new List<string>();
+        foreach (var record in _records)
+        {
+            result.Add($"{record.Status.ToString()} стали в количестве {record.Amount}кг, время доставки - {TimeSpan.FromSeconds(record.DeliveryTime).ToString()}/n");
+        }
+        return result;
+    }
+}
