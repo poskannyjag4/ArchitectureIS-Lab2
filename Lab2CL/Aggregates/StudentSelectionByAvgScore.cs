@@ -7,16 +7,16 @@ namespace Lab2CL.Aggregates;
 public class StudentSelectionByAvgScore: IStudentList
 {
     private readonly List<Student> _students;
-    private int _minAvgScore;
+    private  float _minAvgScore;
 
     public StudentSelectionByAvgScore(List<Student> students)
     {
         _students = students;
-        _minAvgScore = students.Count;
+        _minAvgScore = students.Min(s=>s.AvgScore);
     }
 
     public int Length => _students.Count;
-    public int MinAvgScore => _minAvgScore;
+    public float MinAvgScore => _minAvgScore;
     public List<string> Students => _students.Select(s => s.Fio).ToList();
 
     public IStudentIterator CreateIterator()
@@ -30,12 +30,13 @@ public class StudentSelectionByAvgScore: IStudentList
         if (student == null)
             throw new Exception("Такого студента не существует!");
         _students.Remove(student);
+        _minAvgScore = _students.Min(s => s.AvgScore);
     }
 
     public void Append(Student student)
     {
         _students.Add(student);
-        _minAvgScore = _minAvgScore < _students.Count ? _students.Count : _minAvgScore;
+        _minAvgScore = _students.Min(s => s.AvgScore);
     }
 
     public Student this[int index] => _students[index];
