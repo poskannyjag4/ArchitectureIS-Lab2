@@ -7,6 +7,13 @@ public class MainStock: IStock
     private List<IProvider> _providers;
     public float AmountKg { get; set; }
     public float AmountM { get; set; }
+
+    public MainStock()
+    {
+        _providers = new List<IProvider>();
+        AmountKg = 1000;
+        AmountM = 1500;
+    }
     
     public void AddObserver(IProvider provider)
     {
@@ -15,7 +22,10 @@ public class MainStock: IStock
 
     public void RemoveObserver(int index)
     {
-        _providers.RemoveAt(index);
+        if(index >= 0 && index < _providers.Count)
+            _providers.RemoveAt(index);
+        else
+            throw new IndexOutOfRangeException();
     }
 
     public void NotifyObservers(float kgDiff, float mDiff)
@@ -31,13 +41,13 @@ public class MainStock: IStock
         switch (material)
         {
             case 0:
-                if(amount > AmountKg || amount < 0)
+                if(amount < 0 && Math.Abs(amount) > AmountKg )
                     throw new Exception("Неверное количество!");
                 AmountKg -= amount;
                 NotifyObservers(amount, 0);
                 break;
             case 1:
-                if(amount > AmountM || amount < 0)
+                if(amount < 0 && Math.Abs(amount) > AmountM )
                     throw new Exception("Неверное количество!");
                 AmountM -= amount;
                 NotifyObservers(0, amount);

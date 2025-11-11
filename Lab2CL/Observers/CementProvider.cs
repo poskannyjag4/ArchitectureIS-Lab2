@@ -5,14 +5,23 @@ namespace Lab2CL.Observers;
 
 public class CementProvider: IProvider
 {
-    private List<DeliveryRecord> _records = new List<DeliveryRecord>();
+    private List<DeliveryRecord> _records;
 
-    private readonly float _minAmount = 2534;
-    private const float _trashhold = 20;
-    private readonly Random _random = new Random();
+    private readonly float _minAmount;
+    private readonly float _trashhold;
+    private readonly Random _random;
+
+    public CementProvider(float trashhold, float minAmount)
+    {
+        _minAmount = minAmount;
+        _trashhold = trashhold;
+        _records = new List<DeliveryRecord>();
+        _random = new Random();
+    }
     public void Update(float amountKg, float kgDiff, float amountM , float mDiff)
     {
-        Ship(mDiff);
+        if(mDiff != 0)
+            Ship(mDiff);
         if(amountM < _trashhold)
             Ship(_minAmount);
     }
@@ -32,7 +41,7 @@ public class CementProvider: IProvider
         var result = new List<string>();
         foreach (var record in _records)
         {
-            result.Add($"{record.Status.ToString()} цемента в количестве {record.Amount}кг, время доставки - {TimeSpan.FromSeconds(record.DeliveryTime).ToString()}/n");
+            result.Add($"{record.Status.ToString()} цемента в количестве {record.Amount}кг, время доставки - {TimeSpan.FromSeconds(record.DeliveryTime).ToString()}\n");
         }
         return result;
     }
